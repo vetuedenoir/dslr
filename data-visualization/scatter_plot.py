@@ -4,12 +4,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def put_data_in_df():
+    """Function that open the .csv and load it into a DF"""
     df = pd.read_csv('../assets/dataset_train.csv')
     df = df.select_dtypes(include=np.number)
     df = df.drop("Index", axis="columns")
     return df
 
 def find_correlation(df : pd.DataFrame):
+    """Function that find the correlation and print it into a scatter plot"""
     df = df.corr()
     df = df.unstack()
     df = df.sort_values()
