@@ -1,10 +1,12 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt 
+import numpy as np
 
 def put_data_in_df():
     df = pd.read_csv('../assets/dataset_train.csv')
-    df = df.drop(['Index', 'Hogwarts House', "First Name", "Last Name", "Birthday", "Best Hand"], axis='columns')
+    df = df.select_dtypes(include=np.number)
+    df = df.drop("Index", axis="columns")
     return df
 
 def find_correlation(df : pd.DataFrame):
