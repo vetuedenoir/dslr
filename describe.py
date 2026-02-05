@@ -3,6 +3,7 @@ import argparse
 import sys
 import numpy as np
 from math import sqrt
+from scipy.stats import skew
 
 
 class TinyStatistician():
@@ -175,17 +176,26 @@ def read_csv(file: str):
     return data
 
 
-def describe_feature(data_feature):
+def describe_feature(data_feature, lenght: int):
     description = {}
 
     description["Count"] = len(data_feature)
+    description["missing"] = float((lenght - len(data_feature)) / lenght)
     description["Mean"] = TinyStatistician.mean(data_feature)
     description["Std"] = TinyStatistician.std(data_feature)
+    description["Var"] = TinyStatistician.var(data_feature)
     description["Min"] = TinyStatistician.min(data_feature)
     description["25%"] = TinyStatistician.percentile(data_feature, 25.0)
     description["50%"] = TinyStatistician.percentile(data_feature, 50.0)
     description["75%"] = TinyStatistician.percentile(data_feature, 75.0)
+    description["IQR"] = description["75%"] - description["25%"]
+    # les valeurs aberante inferieur
+    description["OUT<"] = description["25%"] - 1.5 * description["IQR"]
+    # les valeurs aberante superieur
+    description["OUT>"] = description["75%"] + 1.5 * description["IQR"]
     description["Max"] = TinyStatistician.max(data_feature)
+    # Important pour savoir si une normalisation ou un log est pertinent.
+    description["Skew"] = skew(data_feature)
     return description
 
 
@@ -209,7 +219,7 @@ def process_features(data_frame):
 
     for f in features_name:
         feature = data_frame[f].dropna().to_numpy(dtype=float)
-        infos_features[f] = describe_feature(feature)
+        infos_features[f] = describe_feature(feature, len(data_frame[f]))
 
     return infos_features
 
@@ -228,12 +238,17 @@ def display_information(info):
     header = "\t" + "\t".join(truncate_features_name)
     print(header)
 
-    stats_order = ["Count", "Mean", "Std", "Min", "25%", "50%", "75%", "Max"]
+    stats_order = ["Count", "missing", "Mean", "Std", "Var",
+                   "Min", "OUT<", "25%", "50%", "75%", "IQR",
+                   "Max", "OUT>", "Skew"]
 
     for stat in stats_order:
         line = stat
         for feature in features_name:
-            line += f"\t{info[feature][stat]:5f}"
+            if info[feature][stat] > 10000000:
+                line += f"\t{info[feature][stat]:5e}"
+            else:
+                line += f"\t{info[feature][stat]:5f}"
         print(line)
 
 
