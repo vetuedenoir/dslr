@@ -11,15 +11,21 @@ def print_histogram():
     gryffindor = df[df['Hogwarts House'] == 'Gryffindor']
     hufflepuff = df[df['Hogwarts House'] == 'Hufflepuff']
     ravenclaw = df[df['Hogwarts House'] == 'Ravenclaw']
+    plt.figure(figsize=(18, 10))
+    plt.suptitle("Histogram")
+
+    z = 1
     for matiere in num_df:
-        plt.figure()
+        ax = plt.subplot(4, 4, z)
         plt.title(matiere)
         plt.hist(slytherin[matiere], bins=25, alpha=0.5, label="sly", color="purple")
         plt.hist(gryffindor[matiere], bins=25, alpha=0.5, label="gry", color="red")
         plt.hist(hufflepuff[matiere], bins=25, alpha=0.5, label="huff", color="blue")
         plt.hist(ravenclaw[matiere], bins=25, alpha=0.5, label="rav", color="green")
         plt.legend()
-        plt.show()
+        z += 1
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     print_histogram()
