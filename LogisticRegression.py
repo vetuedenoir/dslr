@@ -66,7 +66,7 @@ class LogisticRegression():
         # On pourra l'afficher sur un graphique
 
 
-    def sigmoid_(x):
+    def sigmoid_(self, x):
         """
         Compute the sigmoid of a vector.
         Args:
@@ -149,6 +149,12 @@ class LogisticRegression():
         if x.shape[1] != 1 or y.shape[1] != 1 or x.shape[0] != y.shape[0]:
             raise Exception("x and y must be a vector of shape m * 1.")
 
+        m, n = x.shape
+        y_hat = self.log_predict_(x)
+        e = y_hat - y
+        X = np.c_[np.ones((m, 1)), x]
+        return (np.transpose(X) @ e) / m
+
 
     def gradient_descent(self, x, y):
         """
@@ -160,6 +166,15 @@ class LogisticRegression():
         Raises:
             This function should not raise any Exeption.
         """
+        for _ in range(self.iter):
+            y_hat = self.log_predict_(x)
+            
+            # On enregistre la loss pour plus tard voir son evolution au cours de l'entrainement
+            self.historique.append(self.log_loss_(y, y_hat))
+
+            grad = self.log_gradient(x, y)
+            self.theta -= self.alpha * grad
+
 
     def stochastic_gradient_descent(self, x, y):
         """
@@ -183,6 +198,21 @@ class LogisticRegression():
         Raises:
             This function should not raise any Exeption.
         """
+        # a voir je sais pas si sa marche
+        m, n = x.shape
+        nb_batch = m / self.batch_size
+        x_batch = np.array_split(x, nb_batch)
+        y_batch = np.array_split(y, nb_batch)
+        for _ in range(self.iter):
+            #split des data en mini batch
+            for i in range(nb_batch):
+                y_hat = self.log_predict_(x_batch[i])
+            
+                # On enregistre la loss pour plus tard voir son evolution au cours de l'entrainement
+                self.historique.append(self.log_loss_(y_batch[i], y_hat))
+
+                grad = self.log_gradient(x_batch[i], y_batch[i])
+                self.theta -= self.alpha * grad
 
 
     def fit_(self, x, y):
