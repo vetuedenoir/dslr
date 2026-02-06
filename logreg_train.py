@@ -26,23 +26,17 @@ def plot(loss_vec: list, title: str):
     plt.show()
 
 def train_model(x: np.ndarray , y: np.ndarray, thetas: np.ndarray, algo: str, p: bool, house_name: str):
-    model = lr(thetas.copy(), max_iter=300, alpha=0.01, algo=algo)
+    model = lr(thetas.copy(), max_iter=10000, alpha=0.08, algo=algo)
     model.fit_(x, y)
-    print(f"{house_name} loss final : {model.log_loss_(y, model.log_predict_(x))}")
+    y_hat = model.log_predict_(x)
+    print(f"{house_name} loss final : {model.log_loss_(y, y_hat)}")
+    y_hat = (y_hat >= 0.5).astype(float)
+    score = accuracy_score(y, y_hat)
+    print(score)
     if p == True:
         plot(model.historique, house_name)
+    
     return model
-
-def create_model(path : str):
-    x, huff_y, gryf_y, sly_y, rav_y = load_data(path)
-
-    n_features = x.shape[1]
-    thetas = np.zeros((n_features + 1, 1))
-    lr_gryf = lr(thetas, max_iter=10000, alpha=0.08)
-    lr_gryf.fit_(x, gryf_y)
-    print(lr_gryf.log_loss_(gryf_y, lr_gryf.log_predict_(x)))
-    plot(lr_gryf.historique)
-    print(accuracy_score(gryf_y, lr_gryf.log_predict_(x)))
 
 def save_thetas(models_thetas: list):
     house = ["Gryffindor", "Ravenclaw", "Hufflepuff", "Slytherin"]
@@ -61,9 +55,10 @@ def save_thetas(models_thetas: list):
 
 
 def create_model(path : str, algo: str, plot: bool):
-    thetas = np.array([[0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0]])
 
     x, huff_y, gryf_y, sly_y, rav_y = load_data(path)
+    n_features = x.shape[1]
+    thetas = np.zeros((n_features + 1, 1))
     house = ["Gryffindor", "Hufflepuff", "Slytherin", "Ravenclaw"]
 
     with ProcessPoolExecutor() as executor:
