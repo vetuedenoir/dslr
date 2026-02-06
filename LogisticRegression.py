@@ -6,7 +6,8 @@ class LogisticRegression():
     logistic regression to help classify things.
     """
 
-    def __init__(self, theta, alpha=0.001, max_iter=1000, algo='gradient_descent', batch_size=128, optimization=""):
+    def __init__(self, theta, alpha=0.001, max_iter=1000,
+                 algo='gradient_descent', batch_size=128, optimization=""):
         """
         Initialize a Linear Regression model.
         Parameters:
@@ -41,8 +42,10 @@ class LogisticRegression():
 
         if not isinstance(theta, np.ndarray):
             raise Exception("theta must be a numpy.ndarray")
-        if len(theta.shape) != 2 or theta.shape[1] != 1:
-            raise Exception("theta must be a column vector of shape (n + 1, 1)")
+        if len(theta.shape) != 2 \
+                or theta.shape[1] != 1:
+            raise Exception(
+                "theta must be a column vector of shape (n + 1, 1)")
 
         match algo:
             case "gradient_descent" | "GD":
@@ -65,7 +68,6 @@ class LogisticRegression():
         # l'historique de la loss pour voir la vitesse d'aprentissage
         # On pourra l'afficher sur un graphique
 
-
     def sigmoid_(self, x):
         """
         Compute the sigmoid of a vector.
@@ -78,7 +80,6 @@ class LogisticRegression():
         """
         x = np.clip(x, -500, 500)
         return 1 / (1 + 1 / np.exp(x))
-
 
     def log_predict_(self, x):
         """
@@ -99,12 +100,11 @@ class LogisticRegression():
 
         if self.theta.shape[0] != n + 1:
             raise Exception("x or theta dont have the good shape.")
-        
+
         Xprime = np.c_[np.ones((m, 1)), x]
 
         # return 1 / (1 + 1 / np.exp(Xprime @ self.theta))
         return self.sigmoid_(Xprime @ self.theta)
-
 
     def log_loss_(self, y, y_hat, eps=1e-15):
         """
@@ -119,8 +119,10 @@ class LogisticRegression():
             This function raise Exeptions on any error.
         """
 
-        if not isinstance(y, np.ndarray) or not isinstance(y_hat, np.ndarray) or not isinstance(eps, float):
-            raise Exception("y and y_hat must be a numpy.ndarray, and eps a float")
+        if not isinstance(y, np.ndarray) or not isinstance(
+                y_hat, np.ndarray) or not isinstance(eps, float):
+            raise Exception(
+                "y and y_hat must be a numpy.ndarray, and eps a float")
         if len(y.shape) != 2 or len(y_hat.shape) != 2:
             raise Exception("y and y_hat must be a vector of shape m * 1.")
         if y.shape[1] != 1 or y_hat.shape[1] != 1 or y.shape[0] != y_hat.shape[0]:
@@ -129,8 +131,8 @@ class LogisticRegression():
         m, n = y.shape
         y_hat = np.clip(y_hat, eps, 1 - eps)
 
-        return -np.mean((y * np.log(y_hat) + (np.ones(m) - y) * np.log(np.ones(m) - y_hat)))
-
+        return -np.mean((y * np.log(y_hat) + (np.ones(m) - y)
+                        * np.log(np.ones(m) - y_hat)))
 
     def log_gradient(self, x, y):
         """
@@ -156,7 +158,6 @@ class LogisticRegression():
         X = np.c_[np.ones((m, 1)), x]
         return (np.transpose(X) @ e) / m
 
-
     def gradient_descent(self, x, y):
         """
         Args:
@@ -169,13 +170,13 @@ class LogisticRegression():
         """
         for _ in range(self.max_iter):
             y_hat = self.log_predict_(x)
-            
-            # On enregistre la loss pour plus tard voir son evolution au cours de l'entrainement
+
+            # On enregistre la loss pour plus tard voir son evolution au cours
+            # de l'entrainement
             self.historique.append(self.log_loss_(y, y_hat))
 
             grad = self.log_gradient(x, y)
             self.theta -= self.alpha * grad
-
 
     def stochastic_gradient_descent(self, x, y):
         """
@@ -190,13 +191,14 @@ class LogisticRegression():
         rng = np.random.default_rng()
         m, n = x.shape
         for _ in range(self.max_iter):
-            #split des data en mini batch a chaque iteration les batcch son different
+            # split des data en mini batch a chaque iteration les batcch son
+            # different
             indices = rng.permutation(x.shape[0])
             x_shuffled = x[indices]
             y_shuffled = y[indices]
             for i in range(0, m, self.batch_size):
-                x_batch = x_shuffled[i : i + self.batch_size]
-                y_batch = y_shuffled[i : i + self.batch_size]
+                x_batch = x_shuffled[i: i + self.batch_size]
+                y_batch = y_shuffled[i: i + self.batch_size]
 
                 y_hat = self.log_predict_(x_batch)
 
@@ -205,8 +207,6 @@ class LogisticRegression():
 
                 grad = self.log_gradient(x_batch, y_batch)
                 self.theta -= self.alpha * grad
-
-
 
     def miniBatch_gradient_descent(self, x, y):
         """
@@ -226,13 +226,13 @@ class LogisticRegression():
         for _ in range(self.max_iter):
             for i in range(nb_batch):
                 y_hat = self.log_predict_(x_batch[i])
-            
-                # On enregistre la loss pour plus tard voir son evolution au cours de l'entrainement
+
+                # On enregistre la loss pour plus tard voir son evolution au
+                # cours de l'entrainement
                 self.historique.append(self.log_loss_(y_batch[i], y_hat))
 
                 grad = self.log_gradient(x_batch[i], y_batch[i])
                 self.theta -= self.alpha * grad
-
 
     def fit_(self, x, y):
         """

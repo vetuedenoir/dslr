@@ -1,7 +1,8 @@
 
 import pandas as pd
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import numpy as np
+
 
 def put_data_in_df():
     """Function that open the .csv and load it into a DF"""
@@ -10,7 +11,8 @@ def put_data_in_df():
     df = df.drop("Index", axis="columns")
     return df
 
-def find_correlation(df : pd.DataFrame):
+
+def find_correlation(df: pd.DataFrame):
     """Function that find the correlation and print it into a scatter plot"""
     df = df.corr()
     df = df.unstack()
@@ -18,10 +20,10 @@ def find_correlation(df : pd.DataFrame):
     plt.figure(figsize=(10, 8))
     plt.suptitle("Correlation Scratter")
     print(df)
-    
+
     z = 1
     for i in range(1, 8, 2):
-        ax = plt.subplot(2, 2, z)
+        plt.subplot(2, 2, z)
         keys = str(df.index[i])
         keys = keys.split("'")
         new_keys = []

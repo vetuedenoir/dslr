@@ -1,14 +1,13 @@
 from LogisticRegression import LogisticRegression as lr
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
+
 
 def plot(loss_vec: list):
     plt.plot(loss_vec)
     plt.ylabel('Loss evolution')
     plt.xlabel("number of iteration")
     plt.show()
-
 
 
 # x = np.array([[1, 2, 3, 4, 5, -1, -2, -4, -5]])
@@ -39,7 +38,6 @@ def plot(loss_vec: list):
 # print("\nPrediction: y_hat: \n", y_hat)
 
 # print("\nLoss:\n", mylog.log_loss_(Y, y_hat), "\n")
-
 
 
 X = np.array([[1., 1., 2., 3.], [5., 8., 13., 21.], [3., 5., 9., 14.]])
@@ -82,8 +80,3 @@ print("\nLoss:\n", mylog.log_loss_(Y, y_hat), "\n")
 # 1.4779126923052268
 
 plot(mylog.historique)
-
-
-
-
-

@@ -201,19 +201,19 @@ def describe_feature(data_feature, lenght: int):
 
 def process_features(data_frame):
     features_name = [
-                    "Arithmancy",
-                    "Astronomy",
-                    "Herbology",
-                    "Defense Against the Dark Arts",
-                    "Divination",
-                    "Muggle Studies",
-                    "Ancient Runes",
-                    "History of Magic",
-                    "Transfiguration",
-                    "Potions",
-                    "Care of Magical Creatures",
-                    "Charms",
-                    "Flying"]
+        "Arithmancy",
+        "Astronomy",
+        "Herbology",
+        "Defense Against the Dark Arts",
+        "Divination",
+        "Muggle Studies",
+        "Ancient Runes",
+        "History of Magic",
+        "Transfiguration",
+        "Potions",
+        "Care of Magical Creatures",
+        "Charms",
+        "Flying"]
 
     infos_features = {}
 

@@ -1,7 +1,5 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-import sys
 import argparse
 from concurrent.futures import ProcessPoolExecutor
 from itertools import repeat
@@ -11,12 +9,25 @@ from load_data import load_data
 
 from sklearn.metrics import accuracy_score
 
+
 def parse():
     parser = argparse.ArgumentParser(prog="logreg_train")
-    parser.add_argument("dataset", type=str, help="the dataset to train the model")
-    parser.add_argument("-p", "--plot", action='store_true', help="plot the evolution of loss function")
-    parser.add_argument("-a", "--algo", type=str, help="the algorithms to minimize the error")
+    parser.add_argument(
+        "dataset",
+        type=str,
+        help="the dataset to train the model")
+    parser.add_argument(
+        "-p",
+        "--plot",
+        action='store_true',
+        help="plot the evolution of loss function")
+    parser.add_argument(
+        "-a",
+        "--algo",
+        type=str,
+        help="the algorithms to minimize the error")
     return parser.parse_args()
+
 
 def plot(loss_vec: list, title: str):
     plt.plot(loss_vec)
@@ -25,7 +36,9 @@ def plot(loss_vec: list, title: str):
     plt.title(title)
     plt.show()
 
-def train_model(x: np.ndarray , y: np.ndarray, thetas: np.ndarray, algo: str, p: bool, house_name: str):
+
+def train_model(x: np.ndarray, y: np.ndarray, thetas: np.ndarray,
+                algo: str, p: bool, house_name: str):
     model = lr(thetas.copy(), max_iter=10000, alpha=0.08, algo=algo)
     model.fit_(x, y)
     y_hat = model.log_predict_(x)
@@ -35,8 +48,9 @@ def train_model(x: np.ndarray , y: np.ndarray, thetas: np.ndarray, algo: str, p:
     print(score)
     if p == True:
         plot(model.historique, house_name)
-    
+
     return model
+
 
 def save_thetas(models_thetas: list):
     house = ["Gryffindor", "Ravenclaw", "Hufflepuff", "Slytherin"]
@@ -54,7 +68,7 @@ def save_thetas(models_thetas: list):
             file.write(line + "\n")
 
 
-def create_model(path : str, algo: str, plot: bool):
+def create_model(path: str, algo: str, plot: bool):
 
     x, huff_y, gryf_y, sly_y, rav_y = load_data(path)
     n_features = x.shape[1]
@@ -70,20 +84,20 @@ def create_model(path : str, algo: str, plot: bool):
             repeat(algo),
             repeat(plot),
             house
-    )
+        )
 
     save_thetas([lr_gryf.theta, lr_rav.theta, lr_huff.theta, lr_sly.theta])
+
 
 def main():
     args = parse()
     if args.algo is None:
         args.algo = "gradient_descent"
     try:
-        create_model(args.dataset, args.algo, args.plot)     
+        create_model(args.dataset, args.algo, args.plot)
     except Exception as e:
         print(f"Error: {e}")
 
 
 if __name__ == "__main__":
     main()
-
