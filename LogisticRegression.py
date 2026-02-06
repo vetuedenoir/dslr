@@ -92,12 +92,12 @@ class LogisticRegression():
         if not isinstance(x, np.ndarray):
             raise Exception("x as to be a numpy.ndarray")
         if len(x.shape) != 2:
-            raise Exception("x has to be a vector of shape m * 1.")
+            raise Exception("x has to be a vector of shape m * n.")
 
         m, n = x.shape
 
         if self.theta.shape[0] != n + 1:
-            raise Exception("x has to be a vector of shape m * 1.")
+            raise Exception("x or theta dont have the good shape.")
         
         Xprime = np.c_[np.ones((m, 1)), x]
 
@@ -145,9 +145,9 @@ class LogisticRegression():
         if not isinstance(x, np.ndarray) or not isinstance(y, np.ndarray):
             raise Exception("x and y must be a numpy.ndarray, and eps a float")
         if len(x.shape) != 2 or len(y.shape) != 2:
-            raise Exception("y and y must be a vector of shape m * 1.")
-        if x.shape[1] != 1 or y.shape[1] != 1 or x.shape[0] != y.shape[0]:
-            raise Exception("x and y must be a vector of shape m * 1.")
+            raise Exception("x and y must be a vector of shape m * n or 1")
+        if y.shape[1] != 1 or x.shape[0] != y.shape[0]:
+            raise Exception("x and y must be a vector of shape m * n or 1.")
 
         m, n = x.shape
         y_hat = self.log_predict_(x)
@@ -166,7 +166,7 @@ class LogisticRegression():
         Raises:
             This function should not raise any Exeption.
         """
-        for _ in range(self.iter):
+        for _ in range(self.max_iter):
             y_hat = self.log_predict_(x)
             
             # On enregistre la loss pour plus tard voir son evolution au cours de l'entrainement
@@ -186,6 +186,25 @@ class LogisticRegression():
         Raises:
             This function should not raise any Exeption.
         """
+        rng = np.random.default_rng()
+        m, n = x.shape
+        for _ in range(self.max_iter):
+            #split des data en mini batch a chaque iteration les batcch son different
+            indices = rng.permutation(x.shape[0])
+            x_shuffled = x[indices]
+            y_shuffled = y[indices]
+            for i in range(0, m, self.batch_size):
+                x_batch = x_shuffled[i : i + self.batch_size]
+                y_batch = y_shuffled[i : i + self.batch_size]
+
+                y_hat = self.log_predict_(x_batch)
+
+                # On enregistre pour voir son evolution plus tard
+                self.historique.append(self.log_loss_(y_batch, y_hat))
+
+                grad = self.log_gradient(x_batch, y_batch)
+                self.theta -= self.alpha * grad
+
 
 
     def miniBatch_gradient_descent(self, x, y):
@@ -198,13 +217,12 @@ class LogisticRegression():
         Raises:
             This function should not raise any Exeption.
         """
-        # a voir je sais pas si sa marche
+
         m, n = x.shape
-        nb_batch = m / self.batch_size
+        nb_batch = int(m / self.batch_size)
         x_batch = np.array_split(x, nb_batch)
         y_batch = np.array_split(y, nb_batch)
-        for _ in range(self.iter):
-            #split des data en mini batch
+        for _ in range(self.max_iter):
             for i in range(nb_batch):
                 y_hat = self.log_predict_(x_batch[i])
             
@@ -225,12 +243,13 @@ class LogisticRegression():
         Raises:
             This function raise Exeption on any error.
         """
+
         if not isinstance(x, np.ndarray) or not isinstance(y, np.ndarray):
             raise Exception("x and y must be a numpy.ndarray, and eps a float")
         if len(x.shape) != 2 or len(y.shape) != 2:
-            raise Exception("y and y must be a vector of shape m * 1.")
-        if x.shape[1] != 1 or y.shape[1] != 1 or x.shape[0] != y.shape[0]:
-            raise Exception("x and y must be a vector of shape m * 1.")
+            raise Exception("x and y must be a vector of shape m * n or 1")
+        if y.shape[1] != 1 or x.shape[0] != y.shape[0]:
+            raise Exception("x and y must be a vector of shape m * n or 1.")
 
         # on definie l'algo dans l'init:
         # on a 3 choix possible default (GD ou GD par lot), SGD et miniBatch_GD
