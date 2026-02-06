@@ -243,7 +243,6 @@ class LogisticRegression():
         Raises:
             This function raise Exeption on any error.
         """
-
         if not isinstance(x, np.ndarray) or not isinstance(y, np.ndarray):
             raise Exception("x and y must be a numpy.ndarray, and eps a float")
         if len(x.shape) != 2 or len(y.shape) != 2:

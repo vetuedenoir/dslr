@@ -44,7 +44,7 @@ def plot(loss_vec: list):
 
 X = np.array([[1., 1., 2., 3.], [5., 8., 13., 21.], [3., 5., 9., 14.]])
 Y = np.array([[1], [0], [1]])
-thetas = np.array([[2], [0.5], [7.1], [-4.3], [2.09]])
+thetas = np.array([[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]])
 mylog = lr(thetas, algo='SGD', batch_size=2)
 # Example 0:
 y_hat = mylog.log_predict_(X)

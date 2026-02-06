@@ -4,24 +4,8 @@ import matplotlib.pyplot as plt
 import sys
 import argparse
 
-import LogisticRegression as lr
-
-
-def load_data(file: str) -> pd.DataFrame:
-    """
-    Load the data_set and return the interisting features as pd.DataFrame
-    """
-    df = pd.read_csv(file)
-    if df is None:
-        print(f"Cannot open the file: {file}")
-        sys.exit(1)
-    #charger les features interessant.
-    #
-    #
-    return df
-    
-    #le seul optimizer facile a mettre en place c'est adam
-    #A voir si on le met par default 
+from LogisticRegression import LogisticRegression as lr
+from load_data import load_data
 
 def parse():
     parser = argparse.ArgumentParser(prog="logreg_train")
@@ -31,15 +15,27 @@ def parse():
     parser.add_argument("-o", "--opti", help="the optimization algorithms")
     return parser.parse_args()
 
+def plot(loss_vec: list):
+    plt.plot(loss_vec)
+    plt.ylabel('Loss evolution')
+    plt.xlabel("number of iteration")
+    plt.show()
+
+
+def create_model(path : str):
+    thetas = np.array([[0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0]])
+
+    x, huff_y, gryf_y, sly_y, rav_y = load_data(path)
+
+    lr_gryf = lr(thetas)
+    lr_gryf.fit_(x, gryf_y)
+    plot(lr_gryf.historique)
 
 def main():
     args = parse()
     try:
-        df = load_data(args.dataset)
-        print(df)
-        print(df.describe())
-        #comme c'est un multi-classifier il faudra faire plusieur logistic regression
-
+        create_model(args.dataset)
+        
     except Exception as e:
         print(f"Error: {e}")
 
