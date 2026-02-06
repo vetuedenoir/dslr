@@ -7,6 +7,8 @@ import argparse
 from LogisticRegression import LogisticRegression as lr
 from load_data import load_data
 
+from sklearn.metrics import accuracy_score
+
 def parse():
     parser = argparse.ArgumentParser(prog="logreg_train")
     parser.add_argument("dataset", type=str, help="the dataset to train the model")
@@ -23,13 +25,15 @@ def plot(loss_vec: list):
 
 
 def create_model(path : str):
-    thetas = np.array([[0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0]])
-
     x, huff_y, gryf_y, sly_y, rav_y = load_data(path)
 
-    lr_gryf = lr(thetas, max_iter=5000, alpha=0.01)
+    n_features = x.shape[1]
+    thetas = np.zeros((n_features + 1, 1))
+    lr_gryf = lr(thetas, max_iter=10000, alpha=0.08)
     lr_gryf.fit_(x, gryf_y)
+    print(lr_gryf.log_loss_(gryf_y, lr_gryf.log_predict_(x)))
     plot(lr_gryf.historique)
+    print(accuracy_score(gryf_y, lr_gryf.log_predict_(x)))
 
     # lr_huff = lr(thetas, max_iter=30000)
     # lr_huff.fit_(x, huff_y)
