@@ -76,6 +76,7 @@ class LogisticRegression():
         Raises:
             This function should not raise any Exception.
         """
+        x = np.clip(x, -500, 500)
         return 1 / (1 + 1 / np.exp(x))
 
 
