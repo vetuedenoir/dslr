@@ -9,6 +9,8 @@ from itertools import repeat
 from LogisticRegression import LogisticRegression as lr
 from load_data import load_data
 
+from sklearn.metrics import accuracy_score
+
 def parse():
     parser = argparse.ArgumentParser(prog="logreg_train")
     parser.add_argument("dataset", type=str, help="the dataset to train the model")
@@ -28,6 +30,16 @@ def train_model(x: np.ndarray , y: np.ndarray, thetas: np.ndarray, algo: str, p:
     model.fit_(x, y)
     print(f"{house_name} loss final : {model.log_loss_(y, model.log_predict_(x))}")
 
+def create_model(path : str):
+    x, huff_y, gryf_y, sly_y, rav_y = load_data(path)
+
+    n_features = x.shape[1]
+    thetas = np.zeros((n_features + 1, 1))
+    lr_gryf = lr(thetas, max_iter=10000, alpha=0.08)
+    lr_gryf.fit_(x, gryf_y)
+    print(lr_gryf.log_loss_(gryf_y, lr_gryf.log_predict_(x)))
+    plot(lr_gryf.historique)
+    print(accuracy_score(gryf_y, lr_gryf.log_predict_(x)))
     if p == True:
         plot(model.historique, house_name)
     return model

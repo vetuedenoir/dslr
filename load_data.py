@@ -3,29 +3,37 @@ import pandas as pd
 from data_visualization.pair_plot import to_keep
 
 def load_data(path : str):
-    """load the data, keep only the courses with heterogene repartition of data
-    return numpy arrays, to the model"""
+    """
+    Load data, impute missing values, add polynomial features, 
+    standardize, and return X and One-vs-All targets.
+    """
     data = pd.read_csv(path)
-
     courses = to_keep(path)
+    
+    features_cols = courses[:-1] 
+    for course in features_cols:
+        data[course] = data[course].fillna(data.groupby('Hogwarts House')[course].transform('median'))
+
     data = data[courses].dropna()
-    data_num = data[courses].dropna()
-
-    courses.remove("Hogwarts House")
-    data_num = data_num.drop(['Hogwarts House'], axis="columns")
-
-    data_num = data_num.to_numpy(dtype=float)
     
-    min_val = np.min(data_num, axis=0)
-    max_val = np.max(data_num, axis=0)
-    new_data_num = (data_num - min_val) / (max_val - min_val + 1e-8)
+    x_raw = data[features_cols].to_numpy(dtype=float)
     
-    huff_y = (data['Hogwarts House'] == 'Hufflepuff').dropna().to_numpy(dtype=float).reshape(data_num.shape[0], 1)
-    gryf_y = (data['Hogwarts House'] == 'Gryffindor').dropna().to_numpy(dtype=float).reshape(data_num.shape[0], 1)
-    sly_y = (data['Hogwarts House'] == 'Slytherin').dropna().to_numpy(dtype=float).reshape(data_num.shape[0], 1)
-    rav_y = (data['Hogwarts House'] == 'Ravenclaw').dropna().to_numpy(dtype=float).reshape(data_num.shape[0], 1)
+    # (Polynomial)
+    x_poly = np.hstack((x_raw, x_raw ** 2))
+    
+    #Standardisation (Z-Score)
+    mean = np.mean(x_poly, axis=0)
+    std = np.std(x_poly, axis=0)
+    std[std == 0] = 1 # Sécurité division par zéro
+    x_final = (x_poly - mean) / std
+    
+    houses = data['Hogwarts House']
+    huff_y = (houses == 'Hufflepuff').to_numpy(dtype=float).reshape(-1, 1)
+    gryf_y = (houses == 'Gryffindor').to_numpy(dtype=float).reshape(-1, 1)
+    sly_y = (houses == 'Slytherin').to_numpy(dtype=float).reshape(-1, 1)
+    rav_y = (houses == 'Ravenclaw').to_numpy(dtype=float).reshape(-1, 1)
 
-    return new_data_num, huff_y, gryf_y, sly_y, rav_y
+    return x_final, huff_y, gryf_y, sly_y, rav_y
 
 
 if __name__ == "__main__":
