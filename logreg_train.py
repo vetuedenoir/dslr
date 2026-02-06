@@ -29,6 +29,9 @@ def train_model(x: np.ndarray , y: np.ndarray, thetas: np.ndarray, algo: str, p:
     model = lr(thetas.copy(), max_iter=300, alpha=0.01, algo=algo)
     model.fit_(x, y)
     print(f"{house_name} loss final : {model.log_loss_(y, model.log_predict_(x))}")
+    if p == True:
+        plot(model.historique, house_name)
+    return model
 
 def create_model(path : str):
     x, huff_y, gryf_y, sly_y, rav_y = load_data(path)
@@ -40,9 +43,6 @@ def create_model(path : str):
     print(lr_gryf.log_loss_(gryf_y, lr_gryf.log_predict_(x)))
     plot(lr_gryf.historique)
     print(accuracy_score(gryf_y, lr_gryf.log_predict_(x)))
-    if p == True:
-        plot(model.historique, house_name)
-    return model
 
 def save_thetas(models_thetas: list):
     house = ["Gryffindor", "Ravenclaw", "Hufflepuff", "Slytherin"]
