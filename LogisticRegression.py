@@ -159,7 +159,7 @@ class LogisticRegression():
     def gradient_descent(self, x, y):
         """
         Args:
-            x: has to be an numpy.ndarray, a matrix of shape m * n.
+            x: has to be an numpy.ndarray, a matrix of shape eleves(m) * matiere(n).
             y: has to be an numpy.ndarray, a vector of shape m * 1.
         Returns:
             new_theta: numpy.array, a vector of dimension (number of features + 1, 1).
