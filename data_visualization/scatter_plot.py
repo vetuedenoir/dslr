@@ -2,11 +2,17 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
+import sys
 
 
-def put_data_in_df():
+def put_data_in_df(path_dataset: str):
     """Function that open the .csv and load it into a DF"""
-    df = pd.read_csv('../assets/dataset_train.csv')
+    df = pd.read_csv(path_dataset)
+    if df is None:
+        print(f"Error: Cannot open the file: {path_dataset}")
+        sys.exit(1)
+
     df = df.select_dtypes(include=np.number)
     df = df.drop("Index", axis="columns")
     return df
@@ -40,5 +46,11 @@ def find_correlation(df: pd.DataFrame):
 
 
 if __name__ == "__main__":
-    df = put_data_in_df()
+    parser = argparse.ArgumentParser(prog="scatter_plot")
+    parser.add_argument(
+        "dataset",
+        type=str,
+        help="the dataset")
+    args = parser.parse_args()
+    df = put_data_in_df(args.dataset)
     find_correlation(df)
