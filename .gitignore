@@ -1,4 +1,5 @@
 .pvenv
 __pycache__
+*/__pycache__
 datasets
 .venv

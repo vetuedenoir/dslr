@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import seaborn as sb
 import numpy as np
 import pandas as pd
+import argparse
+import sys
 
 
 def to_keep(path: str) -> list:
@@ -30,9 +32,13 @@ def to_keep(path: str) -> list:
     return final_features
 
 
-def pair_plot(path: str):
+def pair_plot(path_dataset: str):
     """A function that print the pair plot to choose the data"""
-    df = pd.read_csv(path)
+    df = pd.read_csv(path_dataset)
+    if df is None:
+        print(f"Error: Cannot open the file: {path_dataset}")
+        sys.exit(1)
+
     df = df.drop(["Index",
                   "First Name",
                   "Last Name",
@@ -52,7 +58,7 @@ def pair_plot(path: str):
         list(df.index.get_level_values(1))
     to_keep = list(set(to_keep)) + ["Hogwarts House"]
     # Nouveau tableau clean
-    new_df = pd.read_csv(path)
+    new_df = pd.read_csv(path_dataset)
     new_df = new_df[to_keep]
 
     sb.pairplot(new_df, hue="Hogwarts House")
@@ -60,4 +66,10 @@ def pair_plot(path: str):
 
 
 if __name__ == "__main__":
-    pair_plot()
+    parser = argparse.ArgumentParser(prog="pair_plot")
+    parser.add_argument(
+        "dataset",
+        type=str,
+        help="the dataset")
+    args = parser.parse_args()
+    pair_plot(args.dataset)
