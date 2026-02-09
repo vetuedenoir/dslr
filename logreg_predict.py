@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import sys
 import argparse
 import json
-from helper_and_class.LogisticRegression import LogisticRegression as lr
+# from helper_and_class.LogisticRegression import LogisticRegression as lr
 
 
 def parse():
@@ -93,15 +93,15 @@ def load_data(path: str):
     x_poly = np.hstack((x_raw, x_raw ** 2))
 
     # Standardisation (Z-Score)
-    mean = np.mean(x_poly, axis=0)
+    # mean = np.mean(x_poly, axis=0)
     std = np.std(x_poly, axis=0)
     std[std == 0] = 1  # Évite la division par zéro
-    x_final = (x_poly - mean) / std
+    # x_final = (x_poly - mean) / std
 
 
 def main():
     args = parse()
-    thetas = load_thetas(args.weight)
+    # thetas = load_thetas(args.weight)
     x = load_data(args.dataset)
     print(x)
 
