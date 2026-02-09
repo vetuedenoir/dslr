@@ -4,7 +4,9 @@ import pandas as pd
 import sys
 import argparse
 import json
-# from helper_and_class.LogisticRegression import LogisticRegression as lr
+import csv
+
+from helper_and_class.LogisticRegression import LogisticRegression as lr
 
 
 def parse():
@@ -96,10 +98,75 @@ def load_data(path: str):
     return x_final
 
 
+def prediction(x: np.ndarray, thetas: dict):
+    """
+    Predict Hogwarts house labels for each sample in x
+        using logistic regression models.
+    Parameters:
+        x : np.ndarray, feature matrix of shape (n_samples, n_features).
+        thetas : dict, dictionary mapping house names
+            to their trained parameter vectors.
+
+    Returns:
+        house_prediction: Dictionary mapping sample indices (as strings)
+            to predicted house names.
+    """
+    model_Gryf = lr(theta=np.array(thetas["Gryffindor"]))
+    model_Huff = lr(theta=np.array(thetas["Hufflepuff"]))
+    model_Slyt = lr(theta=np.array(thetas["Slytherin"]))
+    model_Rave = lr(theta=np.array(thetas["Ravenclaw"]))
+
+    pred_Gryf = model_Gryf.log_predict_(x)
+    pred_Huff = model_Huff.log_predict_(x)
+    pred_Slyt = model_Slyt.log_predict_(x)
+    pred_Rave = model_Rave.log_predict_(x)
+
+    house_prediction = {}
+    for yG, yH, yS, yR, i in zip(
+            pred_Gryf,
+            pred_Huff,
+            pred_Slyt,
+            pred_Rave,
+            range(len(pred_Gryf))
+            ):
+        yBest = max([yG, yH, yS, yR])
+        if yBest == yG:
+            house_prediction[f"{i}"] = "Gryffindor"
+        elif yBest == yH:
+            house_prediction[f"{i}"] = "Hufflepuff"
+        elif yBest == yS:
+            house_prediction[f"{i}"] = "Slytherin"
+        elif yBest == yR:
+            house_prediction[f"{i}"] = "Ravenclaw"
+
+    return house_prediction
+
+
+def save_prediction(prediction: dict):
+    """
+    Save house predictions to a CSV file named 'houses.csv'.
+
+    Parameters:
+        prediction : dict, dictionary containing prediction results
+            with keys 'Index' and 'Hogwarts House'.
+    """
+
+    try:
+        with open("houses.csv", 'w') as file:
+            fieldnames = ['Index', 'Hogwarts House']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(prediction)
+    except Exception as e:
+        print(f"Cannot save the prediction in house.csv: {e}")
+
+
 def main():
     args = parse()
     thetas = load_thetas(args.weight)
     x = load_data(args.dataset)
+    house_pred = prediction(x, thetas)
+    save_prediction(house_pred)
     print(x)
 
 
