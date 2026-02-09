@@ -32,13 +32,12 @@ def load_data(path: str):
         sys.exit(1)
     courses = to_keep(path)
 
-    features_cols = courses[:-1]
+    features_cols = courses[1:-1]
     for course in features_cols:
         data[course] = data[course].fillna(
             data.groupby('Hogwarts House')[course].transform('median'))
 
     data = data[courses].dropna()
-
     x_raw = data[features_cols].to_numpy(dtype=float)
 
     # (Polynomial)
@@ -55,5 +54,4 @@ def load_data(path: str):
     gryf_y = (houses == 'Gryffindor').to_numpy(dtype=float).reshape(-1, 1)
     sly_y = (houses == 'Slytherin').to_numpy(dtype=float).reshape(-1, 1)
     rav_y = (houses == 'Ravenclaw').to_numpy(dtype=float).reshape(-1, 1)
-
     return x_final, huff_y, gryf_y, sly_y, rav_y

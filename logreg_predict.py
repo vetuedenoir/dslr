@@ -30,7 +30,6 @@ def load_thetas(path: str):
 def to_keep(df: pd.DataFrame) -> list:
     """A function that return the best courses to train the model """
     numeric_df = df.drop(['Index', ' Hogwarts House', ' First Name', ' Last Name', ' Birthday', ' Best Hand'], axis='columns')
-
     if numeric_df.empty:
         print("Error: No numeric columns found in the dataset.")
         return []
@@ -52,10 +51,10 @@ def to_keep(df: pd.DataFrame) -> list:
     final_features = list(features.columns)
 
     # Remove specific features if they exist
-    if 'Arithmancy' in final_features:
-        final_features.remove('Arithmancy')
-    if 'Care of Magical Creatures' in final_features:
-        final_features.remove('Care of Magical Creatures')
+    if ' Arithmancy' in final_features:
+        final_features.remove(' Arithmancy')
+    if ' Care of Magical Creatures' in final_features:
+        final_features.remove(' Care of Magical Creatures')
 
     return final_features
 
@@ -68,7 +67,6 @@ def load_data(path: str):
 
     courses = to_keep(data)
     features_cols = courses
-
     for course in features_cols:
         if course not in data.columns:
             print(f"Warning: Column '{course}' not found in the dataset.")
@@ -86,7 +84,6 @@ def load_data(path: str):
         sys.exit(1)
 
     x_raw = data[features_cols].to_numpy(dtype=float)
-
     # Ajout des caractéristiques polynomiales
     x_poly = np.hstack((x_raw, x_raw ** 2))
 
@@ -115,7 +112,6 @@ def prediction(x: np.ndarray, thetas: dict):
     model_Huff = lr(theta=np.array(thetas["Hufflepuff"]))
     model_Slyt = lr(theta=np.array(thetas["Slytherin"]))
     model_Rave = lr(theta=np.array(thetas["Ravenclaw"]))
-
     pred_Gryf = model_Gryf.log_predict_(x)
     pred_Huff = model_Huff.log_predict_(x)
     pred_Slyt = model_Slyt.log_predict_(x)
@@ -154,9 +150,10 @@ def save_prediction(prediction: dict):
     try:
         with open("houses.csv", 'w') as file:
             fieldnames = ['Index', 'Hogwarts House']
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(prediction)
+            writer = csv.writer(file)
+            writer.writerow(fieldnames)
+            for k, value in prediction.items():
+                writer.writerow([k, value])
     except Exception as e:
         print(f"Cannot save the prediction in house.csv: {e}")
 
@@ -167,7 +164,6 @@ def main():
     x = load_data(args.dataset)
     house_pred = prediction(x, thetas)
     save_prediction(house_pred)
-    print(x)
 
 
 if __name__ == "__main__":
