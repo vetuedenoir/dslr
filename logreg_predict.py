@@ -27,13 +27,12 @@ def load_thetas(path: str):
 
 def to_keep(df: pd.DataFrame) -> list:
     """A function that return the best courses to train the model """
-
-    numeric_df = df.select_dtypes(include=[np.number])
+    numeric_df = df.drop(['Index', ' Hogwarts House', ' First Name', ' Last Name', ' Birthday', ' Best Hand'], axis='columns')
 
     if numeric_df.empty:
         print("Error: No numeric columns found in the dataset.")
         return []
-
+    numeric_df = numeric_df.apply(pd.to_numeric, errors='coerce')
     # Calculate correlation matrix
     corr_matrix = numeric_df.corr().abs()
 
@@ -68,14 +67,11 @@ def load_data(path: str):
     courses = to_keep(data)
     features_cols = courses
 
-    # Remplace les NaN par la médiane globale pour chaque colonne
     for course in features_cols:
         if course not in data.columns:
             print(f"Warning: Column '{course}' not found in the dataset.")
             continue
-        # Convertit en numérique et remplace les erreurs par NaN
         data[course] = pd.to_numeric(data[course], errors='coerce')
-        # Remplace les NaN par la médiane
         data[course] = data[course].fillna(data[course].median())
 
     # Vérifie qu'il n'y a plus de NaN
@@ -93,15 +89,16 @@ def load_data(path: str):
     x_poly = np.hstack((x_raw, x_raw ** 2))
 
     # Standardisation (Z-Score)
-    # mean = np.mean(x_poly, axis=0)
+    mean = np.mean(x_poly, axis=0)
     std = np.std(x_poly, axis=0)
     std[std == 0] = 1  # Évite la division par zéro
-    # x_final = (x_poly - mean) / std
+    x_final = (x_poly - mean) / std
+    return x_final
 
 
 def main():
     args = parse()
-    # thetas = load_thetas(args.weight)
+    thetas = load_thetas(args.weight)
     x = load_data(args.dataset)
     print(x)
 
