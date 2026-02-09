@@ -14,7 +14,7 @@ from helper_and_class.load_data import load_data
 
 
 ITERATION = 1000
-ALPHA = 0.01
+ALPHA = 0.08
 BATCH_SIZE = 256
 
 
@@ -163,6 +163,7 @@ def main():
         args.algo = "gradient_descent"
     try:
         create_model(args.dataset, args.algo, args.plot)
+        print("Training finished!")
     except Exception as e:
         print(f"Error: {e}")
 
