@@ -3,16 +3,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 import argparse
-
 import json
-
 from helper_and_class.LogisticRegression import LogisticRegression as lr
+
+
 def parse():
     parser = argparse.ArgumentParser(prog="logreg_predict")
     parser.add_argument("dataset", type=str, help="the dataset to evaluate")
-    parser.add_argument("weight", type=str, help="The weihgts needed by the model")
+    parser.add_argument("weight", type=str,
+                        help="The weihgts needed by the model")
 
     return parser.parse_args()
+
 
 def load_thetas(path: str):
     try:
@@ -36,7 +38,8 @@ def to_keep(df: pd.DataFrame) -> list:
     corr_matrix = numeric_df.corr().abs()
 
     # Select upper triangle of correlation matrix
-    upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
+    upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1)
+                              .astype(bool))
 
     # Find features with correlation greater than 0.98
     to_drop = [column for column in upper.columns if any(upper[column] > 0.98)]
@@ -56,14 +59,14 @@ def to_keep(df: pd.DataFrame) -> list:
     return final_features
 
 
-def load_data(path:str):
+def load_data(path: str):
     data = pd.read_csv(path)
     if data.empty:
-        print(f"Error: The dataset is empty.")
+        print("Error: The dataset is empty.")
         sys.exit(1)
 
     courses = to_keep(data)
-    features_cols = courses 
+    features_cols = courses
 
     # Remplace les NaN par la médiane globale pour chaque colonne
     for course in features_cols:
@@ -97,7 +100,7 @@ def load_data(path:str):
 
 
 def main():
-    args  = parse()
+    args = parse()
     thetas = load_thetas(args.weight)
     x = load_data(args.dataset)
     print(x)

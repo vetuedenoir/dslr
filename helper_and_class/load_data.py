@@ -47,7 +47,7 @@ def load_data(path: str):
     # Standardisation (Z-Score)
     mean = np.mean(x_poly, axis=0)
     std = np.std(x_poly, axis=0)
-    std[std == 0] = 1  # Sécurité division par zéro
+    std[std == 0] = 1
     x_final = (x_poly - mean) / std
 
     houses = data['Hogwarts House']
