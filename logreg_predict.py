@@ -29,7 +29,11 @@ def load_thetas(path: str):
 
 def to_keep(df: pd.DataFrame) -> list:
     """A function that return the best courses to train the model """
-    numeric_df = df.drop(['Index', ' Hogwarts House', ' First Name', ' Last Name', ' Birthday', ' Best Hand'], axis='columns')
+    numeric_df = df.drop([
+                        'Index',
+                        ' Hogwarts House', ' First Name',
+                        ' Last Name', ' Birthday',
+                        ' Best Hand'], axis='columns')
     if numeric_df.empty:
         print("Error: No numeric columns found in the dataset.")
         return []
