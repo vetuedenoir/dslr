@@ -56,11 +56,18 @@ def print_histogram(path_dataset: str):
     plt.show()
 
 
+def main():
+    try:
+        parser = argparse.ArgumentParser(prog="histogram")
+        parser.add_argument(
+            "dataset",
+            type=str,
+            help="the dataset")
+        args = parser.parse_args()
+        print_histogram(args.dataset)
+    except Exception as e:
+        print(f"Error: {e}")
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog="histogram")
-    parser.add_argument(
-        "dataset",
-        type=str,
-        help="the dataset")
-    args = parser.parse_args()
-    print_histogram(args.dataset)
+    main()

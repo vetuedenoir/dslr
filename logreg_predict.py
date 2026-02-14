@@ -30,9 +30,9 @@ def to_keep(df: pd.DataFrame) -> list:
     """A function that return the best courses to train the model """
     numeric_df = df.drop([
                         'Index',
-                        ' Hogwarts House', ' First Name',
-                        ' Last Name', ' Birthday',
-                        ' Best Hand'], axis='columns')
+                        'Hogwarts House', 'First Name',
+                        'Last Name', 'Birthday',
+                        'Best Hand'], axis='columns')
     if numeric_df.empty:
         print("Error: No numeric columns found in the dataset.")
         return []
@@ -48,10 +48,10 @@ def to_keep(df: pd.DataFrame) -> list:
 
     final_features = list(features.columns)
 
-    if ' Arithmancy' in final_features:
-        final_features.remove(' Arithmancy')
-    if ' Care of Magical Creatures' in final_features:
-        final_features.remove(' Care of Magical Creatures')
+    if 'Arithmancy' in final_features:
+        final_features.remove('Arithmancy')
+    if 'Care of Magical Creatures' in final_features:
+        final_features.remove('Care of Magical Creatures')
 
     return final_features
 

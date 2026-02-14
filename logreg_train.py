@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 import argparse
 import json
+import os
 
 from concurrent.futures import ProcessPoolExecutor
 from itertools import repeat
@@ -108,9 +109,12 @@ def save_thetas(models_thetas: dict):
             to its parameters (thetas).
     """
     try:
+        os.mkdir("assets")
         file = "assets/tethas.json"
         with open(file, "w") as file:
             json.dump(models_thetas, file, indent=4)
+    except FileExistsError:
+        pass
     except IOError as e:
         print(f"Error: cannot write in file: {e}")
 

@@ -18,7 +18,7 @@ def put_data_in_df(path_dataset: str):
     return df
 
 
-def find_correlation(df: pd.DataFrame):
+def find_correlation(df: pd.DataFrame, path_dataset: str):
     """Function that find the correlation and print it into a scatter plot"""
     df = df.corr()
     df = df.unstack()
@@ -35,7 +35,7 @@ def find_correlation(df: pd.DataFrame):
         new_keys = []
         new_keys.append(keys[1])
         new_keys.append(keys[3])
-        new_df = put_data_in_df()
+        new_df = put_data_in_df(path_dataset)
 
         plt.xlabel(new_keys[0])
         plt.ylabel(new_keys[1])
@@ -45,12 +45,20 @@ def find_correlation(df: pd.DataFrame):
     plt.show()
 
 
+def main():
+    try:
+        parser = argparse.ArgumentParser(prog="scatter_plot")
+        parser.add_argument(
+            "dataset",
+            type=str,
+            help="the dataset")
+        args = parser.parse_args()
+
+        df = put_data_in_df(args.dataset)
+        find_correlation(df, args.dataset)
+    except Exception as e:
+        print(f"Error: {e}")
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog="scatter_plot")
-    parser.add_argument(
-        "dataset",
-        type=str,
-        help="the dataset")
-    args = parser.parse_args()
-    df = put_data_in_df(args.dataset)
-    find_correlation(df)
+    main()
