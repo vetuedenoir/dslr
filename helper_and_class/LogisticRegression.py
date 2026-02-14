@@ -41,10 +41,10 @@ class LogisticRegression():
         """
 
         if not isinstance(theta, np.ndarray):
-            raise Exception("theta must be a numpy.ndarray")
+            raise TypeError("theta must be a numpy.ndarray")
         if len(theta.shape) != 2 \
                 or theta.shape[1] != 1:
-            raise Exception(
+            raise ValueError(
                 "theta must be a column vector of shape (n + 1, 1)")
 
         match algo:
@@ -91,14 +91,14 @@ class LogisticRegression():
             This function raise Exeptions on any error.
         """
         if not isinstance(x, np.ndarray):
-            raise Exception("x as to be a numpy.ndarray")
+            raise TypeError("x as to be a numpy.ndarray")
         if len(x.shape) != 2:
-            raise Exception("x has to be a vector of shape m * n.")
+            raise ValueError("x has to be a vector of shape m * n.")
 
         m, n = x.shape
 
         if self.theta.shape[0] != n + 1:
-            raise Exception("x or theta dont have the good shape.")
+            raise ValueError("x or theta dont have the good shape.")
 
         Xprime = np.c_[np.ones((m, 1)), x]
 
@@ -121,12 +121,12 @@ class LogisticRegression():
         m, n = y.shape
         if not isinstance(y, np.ndarray) or not isinstance(
                 y_hat, np.ndarray) or not isinstance(eps, float):
-            raise Exception(
+            raise TypeError(
                 "y and y_hat must be a numpy.ndarray, and eps a float")
         if len(y.shape) != 2 or len(y_hat.shape) != 2:
-            raise Exception("y and y_hat must be a vector of shape m * 1.")
+            raise ValueError("y and y_hat must be a vector of shape m * 1.")
         if n != 1 or y_hat.shape[1] != 1 or m != y_hat.shape[0]:
-            raise Exception("y and y_hat must be a vector of shape m * 1.")
+            raise ValueError("y and y_hat must be a vector of shape m * 1.")
 
         y_hat = np.clip(y_hat, eps, 1 - eps)
 
@@ -145,11 +145,11 @@ class LogisticRegression():
             This function raise Exeption on any error.
         """
         if not isinstance(x, np.ndarray) or not isinstance(y, np.ndarray):
-            raise Exception("x and y must be a numpy.ndarray, and eps a float")
+            raise TypeError("x and y must be a numpy.ndarray, and eps a float")
         if len(x.shape) != 2 or len(y.shape) != 2:
-            raise Exception("x and y must be a vector of shape m * n or 1")
+            raise ValueError("x and y must be a vector of shape m * n or 1")
         if y.shape[1] != 1 or x.shape[0] != y.shape[0]:
-            raise Exception("x and y must be a vector of shape m * n or 1.")
+            raise ValueError("x and y must be a vector of shape m * n or 1.")
 
         m, n = x.shape
         y_hat = self.log_predict_(x)
@@ -249,11 +249,11 @@ class LogisticRegression():
             This function raise Exeption on any error.
         """
         if not isinstance(x, np.ndarray) or not isinstance(y, np.ndarray):
-            raise Exception("x and y must be a numpy.ndarray, and eps a float")
+            raise TypeError("x and y must be a numpy.ndarray, and eps a float")
         if len(x.shape) != 2 or len(y.shape) != 2:
-            raise Exception("x and y must be a vector of shape m * n or 1")
+            raise ValueError("x and y must be a vector of shape m * n or 1")
         if y.shape[1] != 1 or x.shape[0] != y.shape[0]:
-            raise Exception("x and y must be a vector of shape m * n or 1.")
+            raise ValueError("x and y must be a vector of shape m * n or 1.")
 
         # on definie l'algo dans l'init:
         # on a 3 choix possible default (GD ou GD par lot), SGD et miniBatch_GD
