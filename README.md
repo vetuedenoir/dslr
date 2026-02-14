@@ -19,15 +19,15 @@ The objective is to deeply understand data processing, feature selection, and gr
 -------------------------------------------------------------------------------------------------------------------------------------------------
 ## 🛠 Installation
 
-### 🐍 1️⃣ Créer un environnement virtuel Python
-Il est fortement recommandé d’utiliser un environnement virtuel afin d’isoler les dépendances du projet.
+### 🐍 1️⃣ Create a Python Virtual Environment
+It is strongly recommended to use a virtual environment to isolate project dependencies.
 
-Créer l’environnement:
+Create the virtual environment:
 ```sh
 python3 -m venv .venv
 ```
 
-Activer l’environnement:
+Activate the virtual environment:
 
 Linux / macOS
 ```sh
@@ -40,22 +40,22 @@ Windows
 ```
 
 
-### 📥 2️⃣ Installer les dépendances
-Le projet contient un fichier requirements.txt.
+### 📥 2️⃣ install Dependencies
 
+The project includes a requirements.txt file containing all required Python packages.
 ```sh
 pip install -r requirements.txt
 ```
 
 
-### 🗂 3️⃣ Décompresser les datasets
-Les datasets sont fournis dans une archive compressée :
+### 🗂 3️⃣ Extract the Dataset
+The datasets are provided inside a compressed archive:
 
-Décompression manuelle
+Manual extraction
 ```sh
 tar -xvf datasets.tgz.xz;tar -xvf datasets.tgz
 ```
-Cela créera un dossier contenant :
+This will extract:
 
 dataset_train.csv et dataset_test.csv
 
