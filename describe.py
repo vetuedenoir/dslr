@@ -142,10 +142,13 @@ def main():
     Main function: Parses arguments, reads the dataset,
     processes features, and displays statistics.
     """
-    args = parse()
-    data_frame = read_csv(args.data_file)
-    features_description = process_features(data_frame)
-    display_information(features_description)
+    try:
+        args = parse()
+        data_frame = read_csv(args.data_file)
+        features_description = process_features(data_frame)
+        display_information(features_description)
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 if __name__ == "__main__":
